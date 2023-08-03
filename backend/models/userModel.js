@@ -24,7 +24,7 @@ const userSchema = mongoose.Schema({
         unique: true,
     },
 
-    email: {
+    password: {
         type: String,
         require: true,
         min: 8,
@@ -42,11 +42,17 @@ const userSchema = mongoose.Schema({
     },
 
     location: String,
-    viewedProfile: Number,
-    impressions: Number,
+    viewedProfile: {
+        type: Number,
+        default: Math.floor(Math.random() * 1000)
+    },
+    impressions: {
+        type: Number,
+        default: Math.floor(Math.random() * 1000)
+    },
 }, {timestamps: true})
 
 
-const User = mongoose.Model('user', userSchema);
+const User = mongoose.model('user', userSchema);
 
 export default User;

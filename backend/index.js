@@ -8,7 +8,8 @@ import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { register } from './controllers/auth.js';
-import { errorHandler } from './middleware/errorMiddleware.js';
+import { errorHandler, notFound } from './middleware/errorMiddleware.js';
+import authRoutes from './routes/authRoutes.js';
 
 //* CONFIGURATIONS
 dotenv.config();
@@ -16,15 +17,14 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.json({limit: '30mb', extended: true}));
-app.use(express.urlencoded({ limit:'30mb', extended: true}));
-app.use(helmet);
-app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }))
-app.use(morgan("common"))
-app.use(cors);
-app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
+app.use(express.json({limit: '30mb', extended: true})); // ✅
+app.use(helmet()); // ✅
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" })); // ✅
+app.use(morgan("common")); //✅
+app.use(express.urlencoded({ limit: '30mb', extended: true})); //✅
+app.use(cors());
 
-app.use(errorHandler);
+// app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 
 //* FILE STORAGE CONFIGURATION
 const storage = multer.diskStorage({
@@ -40,6 +40,14 @@ const upload = multer({storage});
 
 //* ROUTES WITH FILES
 app.post("/auth/register", upload.single('picture'), register)
+
+//* ROUTES
+app.use('/auth', authRoutes);
+
+
+//* ERROR HANDLING MIDDLEWARES
+app.use(notFound);
+app.use(errorHandler);
 
 //* MONGOOSE SETUP
 const PORT = process.env.PORT || 5000;
