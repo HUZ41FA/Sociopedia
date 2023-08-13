@@ -50,7 +50,7 @@ const userSchema = mongoose.Schema({
         type: Number,
         default: Math.floor(Math.random() * 1000)
     },
-}, {timestamps: true})
+}, { timestamps: true })
 
 
 const User = mongoose.model('user', userSchema);
