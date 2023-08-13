@@ -11,14 +11,16 @@ import { useSelector } from 'react-redux'
 function App() {
   const isDarkMode = useSelector(state => state.isDarkMode);
   const theme = useMemo(()=> createTheme(themeSettings(isDarkMode)), [isDarkMode]);
+  const isAuth = Boolean(useSelector(state => state.token));
+  
   return (
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline/>
           <Routes>
             <Route path='/login' element={<LoginScreen/>} />
-            <Route path='/' element={<HomeScreen/>} />
-            <Route path='/profile/:userId' element={<ProfileScreen/>} />
+            <Route path='/' element={isAuth ? <HomeScreen/> : <Navigate to="/login"/>} />
+            <Route path='/profile/:userId' element={isAuth ? <ProfileScreen/> : <Navigate to="/login"/>} />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

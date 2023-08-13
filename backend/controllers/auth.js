@@ -4,7 +4,7 @@ import User from '../models/userModel.js';
 import asyncHandler from 'express-async-handler';
 
 //? REGISTER USER
-export const register = asyncHandler(async(req, res)=>{
+export const register = asyncHandler(async (req, res) => {
     const {
         firstName,
         lastName,
@@ -33,30 +33,24 @@ export const register = asyncHandler(async(req, res)=>{
 
     });
 
-    const {_doc} = await newUser.save();
+    const { _doc } = await newUser.save();
 
-    return res.status(201).json({..._doc, password: null});
+    return res.status(201).json({ user: newUser, password: null });
 });
 
-export const login = asyncHandler(async(req, res)=>{
-    const {email, password} = req.body;
-    const user = await User.findOne({email: email});
+export const login = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email: email });
     const isMatch = await brcrypt.compare(password, user?.password);
 
-    console.log(email);
-    console.log(password);
-    console.log(user);
-    console.log(user?.password);
-    console.log(isMatch);
-    if(user == null || !isMatch){
+    if (user == null || !isMatch) {
         throw Error("Please enter a valid email or password");
-    }else{
-        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET)
-    
+    } else {
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
+
         res.status(200).json({
-            ...user._doc,
-            password: null,
-            token,
+            user: user,
+            token: token
         });
     }
 })

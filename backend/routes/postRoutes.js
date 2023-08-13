@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/", authenticate, getFeedPosts);
 router.get("/:userId/posts", authenticate, getUserPosts);
-router.patch("/:id/post", authenticate, likePost);
+router.patch("/:id/like", authenticate, likePost);
 
 
 export default router;

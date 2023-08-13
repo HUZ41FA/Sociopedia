@@ -1,5 +1,6 @@
 import Post from "../models/postModel.js";
 import asyncHandler from 'express-async-handler';
+import User from "../models/userModel.js";
 
 export const createPost = asyncHandler(async (req, res) => {
     try {
@@ -16,7 +17,6 @@ export const createPost = asyncHandler(async (req, res) => {
             likes: {},
             comments: []
         })
-
         await newPost.save();
         const post = await Post.find();
         res.status(201).json(post);
@@ -29,8 +29,8 @@ export const createPost = asyncHandler(async (req, res) => {
 
 export const getFeedPosts = asyncHandler(async (req, res) => {
     try {
-        const post = await post.find();
-        req.status(200).json(post);
+        const post = await Post.find();
+        res.status(200).json(post);
     } catch (err) {
         console.log(err);
     }
@@ -40,7 +40,7 @@ export const getFeedPosts = asyncHandler(async (req, res) => {
 export const getUserPosts = asyncHandler(async (req, res) => {
     try {
         const { userId } = req.params;
-        const post = await post.find({userId:userId});
+        const post = await Post.find({ userId: userId });
         res.status(200).json(post);
     } catch (err) {
         console.log(err);
@@ -48,28 +48,27 @@ export const getUserPosts = asyncHandler(async (req, res) => {
 });
 
 
-export const likePost = asyncHandler(async(req,res)=>{
-    try{
-        const {id} = req.params;
-        const {userId} = req.body;
+export const likePost = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userId } = req.body;
         const post = await Post.findById(id);
         const isLiked = post.likes.get(userId);
-
-        if(isLiked){
+        if (isLiked) {
             post.likes.delete(userId);
-        }else{
+        } else {
             post.likes.set(userId, true);
         }
 
         const updatedPost = await Post.findByIdAndUpdate(
             id,
-            { likes: post.likes},
-            { new: true}, 
-            );
+            { likes: post.likes },
+            { new: true },
+        );
 
         res.status(200).json(updatedPost);
 
-    }catch{ 
+    } catch {
         console.log(err);
     }
 })

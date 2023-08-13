@@ -12,7 +12,7 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         setMode: (state) => {
-            state.mode = !state.mode
+            state.isDarkMode = !state.isDarkMode
         },
 
         setLogin: (state, action) => {
@@ -27,9 +27,7 @@ export const authSlice = createSlice({
 
         setFriends: (state, action) => {
             if (state.user) {
-                state.posts = action.payload.friends;
-            } else {
-                console.log("user has no friends 😭😭😭");
+                state.user.friends = action.payload.friends;
             }
         },
 
@@ -39,7 +37,7 @@ export const authSlice = createSlice({
 
         setPost: (state, action) => {
             const updatedPosts = state.posts.map((post) => {
-                if (post._id === action.payload.post_id) {
+                if (post._id === action.payload.post._id) {
                     return action.payload.post;
                 } else {
                     return post;
